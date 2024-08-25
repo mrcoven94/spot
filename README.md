@@ -1,13 +1,8 @@
 # Spot - AI Admin Interface
 
-An intelligent administrative interface powered by AI.
-
 ## Project Overview
 
 The AI Admin Interface is a cutting-edge solution designed to streamline administrative tasks using artificial intelligence. This project leverages Next.js to create a responsive and efficient web application that enhances productivity and decision-making processes.
-
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
