@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,14 +16,31 @@ interface AnalysisResult {
   entities: string[];
 }
 
+interface Document {
+  id: string;
+  name: string;
+  content: string;
+  keywords: string[];
+}
+
 export default function AIEnhancedAdminInterface(): JSX.Element {
   const [searchQuery, setSearchQuery] = useState('')
   const [uploadStatus, setUploadStatus] = useState<string | null>(null)
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
+  const [searchResults, setSearchResults] = useState<Document[]>([])
 
   const handleSearch = async () => {
-    // Implement search functionality
-    console.log('Searching for:', searchQuery)
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`)
+      if (!response.ok) {
+        throw new Error('Search failed')
+      }
+      const results = await response.json()
+      setSearchResults(results)
+    } catch (error) {
+      console.error('Error during search:', error)
+      toast.error('Error performing search')
+    }
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,7 +148,17 @@ export default function AIEnhancedAdminInterface(): JSX.Element {
                 </div>
                 <ScrollArea className="h-[300px] border rounded-md p-4">
                   <h3 className="font-semibold mb-2">AI-Enhanced Search Results</h3>
-                  <p>AI-powered search results and summaries will appear here...</p>
+                  {searchResults.length > 0 ? (
+                    searchResults.map((result) => (
+                      <div key={result.id} className="mb-4 p-2 border rounded">
+                        <h4 className="font-semibold">{result.name}</h4>
+                        <p className="text-sm text-gray-600">{result.content.substring(0, 100)}...</p>
+                        <p className="text-xs text-gray-500 mt-1">Keywords: {result.keywords.join(', ')}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No results found. Try a different search query.</p>
+                  )}
                 </ScrollArea>
               </CardContent>
             </Card>
